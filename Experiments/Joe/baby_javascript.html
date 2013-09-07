@@ -1,0 +1,42 @@
+<HTML>
+<HEAD>
+<TITLE> Welcome to my site</TITLE></HEAD>
+<BODY>
+<script src="http://crypto-js.googlecode.com/svn/tags/3.1.2/build/rollups/sha256.js"></script>
+<script>
+<!--
+function genPass(x)
+{
+var url = getURL()
+x.url.value = getURL()
+x.localKey.value ="foo"
+var local = x.localKey.value
+x.privateKey.value = "bob"
+var privKey = x.privateKey.value 
+var toHash = url.concat(local, privKey)
+var hash = CryptoJS.SHA256(toHash)
+x.password.value = hash
+}
+//copied from http://www.codeproject.com/Tips/498368/Get-current-page-URL-using-JavaScript
+function getURL()
+{
+var currentPageUrl = "";
+if (typeof this.href === "undefined") {
+    currentPageUrl = document.location.toString().toLowerCase();
+}
+else {
+    currentPageUrl = this.href.toString().toLowerCase();
+}
+return currentPageUrl
+}
+</SCRIPT>
+<form>
+<p>Local Key:<input type="text" name="localKey"></p>
+<p>Master Key:<input type="password" name="privateKey"></p>
+<p><input type="button" value="Get Password" onClick="genPass(this.form)"></p>
+<p>Webpage URL:<input type="text" name="url"></p>
+<p>Password:<input type="text" name="password"></p>
+</form>
+</body></html>
+</BODY>
+</HTML>
