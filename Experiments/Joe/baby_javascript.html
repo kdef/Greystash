@@ -9,14 +9,39 @@ function genPass(x)
 {
 var url = getURL()
 x.url.value = getURL()
-x.localKey.value ="foo"
 var local = x.localKey.value
-x.privateKey.value = "bob"
-var privKey = x.privateKey.value 
+var privKey = x.privateKey.value
+ 
+//big long string
 var toHash = url.concat(local, privKey)
+
+//creates a hex random number
 var hash = CryptoJS.SHA256(toHash)
 x.password.value = hash
+var hashStr = hash.toString()
+console.log(hashStr)
+var hexPairs = hashStr.match(/\w\w\w\w/g)
+var password = []
+for(i in hexPairs)
+{
+	var hex = hexPairs[i]
+	console.log(hex + "\n")
+	hex = parseInt(hex,16) //now is an int
+	console.log("\t" + hex + "\n")
+	
+	//convert each int to a character in a passowrd
+	hex = hex%94
+	hex = hex + 33 
+	var chr = String.fromCharCode(hex)
+	console.log("\t" + chr + "\n")
+	password.push(chr)
 }
+password = password.join("")
+console.log(password)
+x.passwordGen.value = password
+}
+
+
 //copied from http://www.codeproject.com/Tips/498368/Get-current-page-URL-using-JavaScript
 function getURL()
 {
@@ -29,13 +54,16 @@ else {
 }
 return currentPageUrl
 }
+
+
 </SCRIPT>
 <form>
 <p>Local Key:<input type="text" name="localKey"></p>
 <p>Master Key:<input type="password" name="privateKey"></p>
 <p><input type="button" value="Get Password" onClick="genPass(this.form)"></p>
 <p>Webpage URL:<input type="text" name="url"></p>
-<p>Password:<input type="text" name="password"></p>
+<p>Password(Hex):<input type="text" name="password"></p>
+<p>Password(GEN):<input type="text" name="passwordGen"></p>
 </form>
 </body></html>
 </BODY>
