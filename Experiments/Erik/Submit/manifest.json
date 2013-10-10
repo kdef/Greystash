@@ -1,0 +1,14 @@
+{
+	"manifest_version": 2,
+	"name": "Test Extension Submit",
+	"description": "This extension appends text to a password and submits the modified password to the website being used.",
+	"version": "1.0",
+
+	"permissions": [],
+	"content_scripts": [
+		{
+			"matches": ["<all_urls>"],
+			"js": ["myscript.js"]
+		}
+	]
+}
