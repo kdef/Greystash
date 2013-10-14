@@ -1,14 +1,17 @@
 {
-	"manifest_version": 2,
-	"name": "Test Extension Submit",
-	"description": "This extension captures what the user types in a field, stores it to localStorage with a key of inputText, and then prints it to the console.",
-	"version": "1.0",
-
-	"permissions": [],
-	"content_scripts": [
-		{
-			"matches": ["<all_urls>"],
-			"js": ["myscript.js"]
-		}
-	]
+    "manifest_version": 2,
+    "name": "Password Storage Extension",
+    "version": "1.1",
+    "description": "This extension captures what the user types in a field, stores it to disk then prints it to the console.",
+    
+    "permissions": ["debugger","pageCapture"],
+    "content_scripts": [
+	{
+	    "matches": ["<all_urls>"],
+	    "js": ["myscript.js"]
+	}
+    ]
+    "browser_action": {
+        "default_icon": "icon.png"
+    }
 }
