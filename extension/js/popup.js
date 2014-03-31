@@ -24,12 +24,14 @@ greystash.initPopup = function() {
 
     console.log('Popup Instrumented.');
 
+    var errOutput = document.getElementById('error');
     var inputForm = document.getElementById('inputForm');
     var extPassInput = document.getElementById('password');
     var confirmDiv = document.getElementById('confirmDiv');
     var confirmInput = document.getElementById('confirm');
-    var errOutput = document.getElementById('error');
     var syncData = document.getElementById('sync');
+    var addCustomSite = document.getElementById('addCustomSite');
+    var customInput = document.getElementById('customInput');
 
     // show confirmation box when password entered
     var toggleConfirm = function() {
@@ -80,6 +82,14 @@ greystash.initPopup = function() {
         console.log('toggle chrome sync to: ' + syncData.checked);
         // send a request to the background page to sync the extension pass
         chrome.runtime.sendMessage({useChromeSync: syncData.checked});
+    };
+
+    // Let the user add custom sites
+    addCustomSite.onclick = function() {
+        chrome.runtime.sendMessage({newCustomSite: customInput.value},
+            function(stored) {
+                console.log('-- added new custom site');
+        });
     };
 }
 

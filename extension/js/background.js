@@ -100,6 +100,16 @@ greystash.messageHandler = function(csm, sender, sendResponse) {
         greystash.updateStalePass(csm.changeStalePass);
         sendResponse();
     }
+    else if (csm.newCustomSite) {
+        var url = greystash.getCanonicalURL(csm.newCustomSite);
+        console.log('Adding custom site: ', url);
+
+        greystash.addCustomSite(function(stored) {
+            // also reinitializes the stale table
+            greystash.initRules();
+            sendResponse(stored);
+        }, url);
+    }
     else {
         sendResponse({farewell: "looks like we forgot a case"});
     }

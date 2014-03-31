@@ -15,6 +15,7 @@ var greystash = greystash || {};
 // storage keys
 greystash.CHROME_SYNC = 'sync';
 greystash.EXT_PASS = 'extPass';
+greystash.CUSTOMS = 'customRules';
 
 
 /*
@@ -69,6 +70,37 @@ greystash.storePassword = function(text, callback, site) {
         });
     });
 }
+
+
+/*
+ * getCustomSites()
+ *
+ * Retrieves the sites with custom rules set up by the user.
+ *
+ * @param callback A function that looks like: function(arr of string){...}
+ */
+greystash.getCustomSites = function(callback) {
+    greystash.getPassword(callback, greystash.CUSTOMS);
+};
+
+
+/*
+ * addCustomSite()
+ *
+ * Adds a custom website URL to the list of custom sites in storage.
+ *
+ * @param callback Function that looks like: function(object){...}
+ *                 The object contains the key:value pair that was stored
+ * @param cURL Canonical URL of site to add generic rule for
+ */
+greystash.addCustomSite = function(callback, cURL)  {
+    // grab the current custom sites
+    greystash.getCustomSites(function(sites) {
+        if (!sites) sites = [];
+        sites.push(cURL);
+        greystash.storePassword(sites, callback, greystash.CUSTOMS);
+    });
+};
 
 
 /*

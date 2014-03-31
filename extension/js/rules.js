@@ -10,6 +10,75 @@ var greystash = greystash || {};
 
 
 /*
+ * getRule()
+ *
+ * Get password rules for a supported website.
+ *
+ * @param url The url to get the rule for
+ *
+ * @return a rule object
+ */
+greystash.getRule = function(url) {
+    greystash.rules = greystash.rules || greystash.initRules();
+
+    var entry;
+    // check each site listed in the rules
+    for (var site in greystash.rules) {
+        // if the url is associated with this site
+        if (greystash.rules[site].urls.indexOf(url) > -1) {
+            entry = greystash.rules[site];
+            break;
+        }
+    }
+
+    if (entry == null) {
+        console.log('ERROR: rule entry for ' + url + ' not found');
+        return null;
+    }
+
+    return entry;
+};
+
+
+/*
+ * initCustomRules()
+ *
+ * Get any custom website rules added by the user.
+ *
+ * @param callback Function that looks like: function(rules){...}
+ *              The rules object will have the new custom sites in it.
+ * @param rules Object to add rules to
+ */
+greystash.initCustomRules = function(callback, rules) {
+    // for now the generic rule will limit passwords to a length of 14
+    // this is the shortest max length associated with any Greystash supported sites.
+    var genRule = /^(?=.{6,14}$)(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[\^*#!@$%&()]).*$/;
+
+    greystash.getCustomSites(function(sites) {
+        console.log('Checking for custom sites to add...', sites);
+        // make sure we are dealing with an array of strings
+        if (Object.prototype.toString.call(sites) === '[object Array]') {
+            var numCustom = 0;
+
+            sites.forEach(function(customSite) {
+                rules['custom' + numCustom] = {
+                    urls: [customSite],
+                    rule: genRule
+                };
+                numCustom++;
+            });
+
+            console.log('done adding custom rules.', rules)
+        } else {
+            console.log('no custom sites to add!');
+        }
+
+        callback(rules);
+    });
+};
+    
+
+/*
  * initRules()
  *
  * This method runs when the script loads and makes the mathching urls,
@@ -26,6 +95,8 @@ var greystash = greystash || {};
  * Optionally a rule may also contain:
  *   key: max_len
  * value: integer value 
+ *
+ * This function also reinitializes the stale table.
  *
  * @return the rules object containg all supported website rules
  */
@@ -98,40 +169,13 @@ greystash.initRules = function() {
         rule: /^(?=.{8,}$)(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[\^\-*#~!@$%&()_+=`]).*/
     };
 
-
-    // read a file for more rules in JSON?
+    greystash.initCustomRules(function(newRules) {
+        // finish creating rules
+        greystash.rules = newRules;
+        greystash.initStaleTable();
+    }, rules);
 
     return rules;
 };
-greystash.rules = greystash.initRules();
+greystash.initRules();
 
-
-/*
- * getRule()
- *
- * Get password rules for a supported website.
- *
- * @param url The url to get the rule for
- *
- * @return a rule object
- */
-greystash.getRule = function(url) {
-    greystash.rules = greystash.rules || greystash.initRules();
-
-    var entry;
-    // check each site listed in the rules
-    for (var site in greystash.rules) {
-        // if the url is associated with this site
-        if (greystash.rules[site].urls.indexOf(url) > -1) {
-            entry = greystash.rules[site];
-            break;
-        }
-    }
-
-    if (entry == null) {
-        console.log('ERROR: rule entry for ' + url + ' not found');
-        return null;
-    }
-
-    return entry;
-};
