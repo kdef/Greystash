@@ -67,7 +67,7 @@ var updateDropDown = function(){
     for(var i = 0; i < urls.length; i++){
 	    var url = urls[i];
         //make sure isnt default rule
-        if(url.search(".") != -1){
+        if(url.search("XXX") == -1){
             var option = document.createElement("option");
             option.text = url;
             greystash.site.add(option);
