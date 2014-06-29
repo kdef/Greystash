@@ -1,11 +1,13 @@
 
+var greystash = greystash || {};
+
 //constants for the rules fusion table
-var tabID = '1IB-gYKQWxGyVW6U7RQqdhfGgWus8BH0aX_BxEyRo';
-var apikey = 'AIzaSyDPIDblZh-H55gEkg7u6KVry1OZ-pgGpsQ';
-var NAME =0;
-var URLS = 1;
-var RULE = 2;
-var MAX_LEN = 3;
+greystash.tabID = '1IB-gYKQWxGyVW6U7RQqdhfGgWus8BH0aX_BxEyRo';
+greystash.apiKey = 'AIzaSyDPIDblZh-H55gEkg7u6KVry1OZ-pgGpsQ';
+greystash.NAME = 0;
+greystash.URLS = 1;
+greystash.RULE = 2;
+greystash.MAX_LEN = 3;
 
 /**
   *  handelResponse()
@@ -55,10 +57,10 @@ var requestTable = function(callback,col,whereExp) {
 	whereExp = '';
     }
     makeRequestor();         
-    var query = "SELECT " + col +" FROM " + tabID + " " + whereExp;
+    var query = "SELECT " + col +" FROM " + greystash.tabID + " " + whereExp;
     var url = "https://www.googleapis.com/fusiontables/v1/query";
     url = url + "?sql=" + query;
-    url = url + "&key=" + apikey;
+    url = url + "&key=" + greystash.apiKey;
     console.log('First request URL: '+ url); 
     sendRequest(url, callback);
 };

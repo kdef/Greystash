@@ -68,7 +68,7 @@ greystash.generatePassword = function(url, typed, extPass,rule){
         pass = b64.replace(/3|T|u|R|d/g,function(match) {return subs[match];});
 
         // truncate if needed
-        var max = rule[MAX_LEN];
+        var max = rule[greystash.MAX_LEN];
 	console.log("MAX LEN: " + max);
         if (max && pass.length > max) pass = pass.substring(0, max);
         
