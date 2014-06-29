@@ -1,3 +1,4 @@
+
 /*
  * password.js
  *
@@ -43,11 +44,12 @@ greystash.getCanonicalURL = function(url) {
  *
  * @return A string containing the generated password
  */
-greystash.generatePassword = function(url, typed, extPass){
+greystash.generatePassword = function(url, typed, extPass,rule){
     var toHash = url + extPass;
     var pass;
     var attempt = 0;
     var loopCount = 30000;
+    passwordRe =  new RegExp (rule["RULE"]);
     do {
         // 600 = number of bits to output. 600 bits == 100 base64 chars
         var bits = sjcl.misc.pbkdf2(toHash, typed, loopCount, 600);
@@ -66,7 +68,8 @@ greystash.generatePassword = function(url, typed, extPass){
         pass = b64.replace(/3|T|u|R|d/g,function(match) {return subs[match];});
 
         // truncate if needed
-        var max = greystash.getRule(url).max_len;
+        var max = rule[MAX_LEN];
+	console.log("MAX LEN: " + max);
         if (max && pass.length > max) pass = pass.substring(0, max);
         
 		console.log("Generating Password:\n\tAttempt:" + attempt + "\t" + pass);
@@ -74,7 +77,7 @@ greystash.generatePassword = function(url, typed, extPass){
         attempt++;
         loopCount = 1; // try passwords faster after first attempt
 		toHash = pass;//make each hash dependent on the last result
-    } while (!greystash.checkRule(url, pass) && (attempt < 100));
+    } while (!passwordRe.test(pass) && (attempt < 100));
 
     console.log(pass ?
         'genPass: Generated password: ' + pass :
@@ -82,7 +85,7 @@ greystash.generatePassword = function(url, typed, extPass){
 
     return pass;
 }
-
+//might be depricated
 
 /*
  * checkRule()
