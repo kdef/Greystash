@@ -11,6 +11,7 @@
  */
 
 var greystash = greystash || {};
+greystash.FUSION_TABLE_LOCAL = "fusionTableLocal";
 
 
 // Add a listener to handle the first install of the Greystash extension
@@ -29,12 +30,16 @@ chrome.runtime.onInstalled.addListener(greystash.onInstall);
 // the page is instrumented according to our initInjection()
 // content script function if the website is supported.
 greystash.initPage = function(tabId, changeInfo, tab) {
-    // if there is a rule for this url than this website is supported
-    var url = greystash.getCanonicalURL(tab.url);
-    console.log("Canonical url: " + url);
-    if (greystash.getRule(url) && (changeInfo.status === 'complete')) {
+    chrome.windows.onCreated.addListener(function() {
+        requestTable(function(){
+            var response = handleResponse();
+            console.log("About to store: " + response);
+            greystash.storeObject(greystash.FUSION_TABLE_LOCAL,response);
+        });
+    });
+    if (changeInfo.status === 'complete') {
         chrome.pageAction.show(tabId);
-
+        var url = greystash.getCanonicalURL(tab.url);
         var staleness = greystash.isStale(url);
 
         chrome.tabs.executeScript(tabId, {
@@ -63,8 +68,24 @@ greystash.messageHandler = function(csm, sender, sendResponse) {
             console.log('  url: ' + url);
             console.log('  typed: ' + params.typed);
             console.log('  extPass: ' + extPass);
-            var pass = greystash.generatePassword(url, params.typed, extPass);
-            sendResponse({generatedPass : pass});
+            greystash.getObject(greystash.FUSION_TABLE_LOCAL,function(response){
+                console.log("Response from storage: " + response["rows"]);
+                var row = null;
+                if(response === null || response["rows"] === null){
+                    return;
+                }
+                for(var i = 0; i < response["rows"].length; i++){
+                    var curRow = response["rows"][i];
+                    if(curRow[greystash.URLS] === url){
+                        row = curRow;
+                    }
+                }
+                if(row === null){
+                    row = resposne["rows"].pop();
+                }
+                var pass = greystash.generatePassword(url, params.typed, extPass,row);
+                sendResponse({generatedPass : pass});
+            }); 
         };
 
         if (params.stale) {

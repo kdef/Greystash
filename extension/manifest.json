@@ -17,6 +17,7 @@
     "background": {
       "scripts": [
         "js/background.js",
+	"js/fusionTable.js",
         "js/file.js",
         "js/extPassword.js",
         "js/password.js",
