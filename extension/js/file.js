@@ -112,16 +112,24 @@ greystash.changeChromeSyncState = function(value) {
 
 //helper functions to handle arbitrary reading and writing to storage
 greystash.storeObject = function(key, obj){
+    console.log("Ready to write object to memory: " + key);
     console.log(obj);
-    if(obj != null){
-        chrome.storage.local.set({key : JSON.stringify(obj)});
+    if(obj != null && obj["kind"] != null){
+        chrome.storage.local.set({"foo" : obj},function(){
+            console.log("Saved the thing!");
+            console.log(obj);
+            chrome.storage.local.get("foo" ,function(response){
+                console.log("Response: ");
+                console.log(response);
+            });
+        });
     }
 }
 greystash.getObject = function(key,callback){
     console.log("Get OBJ: " + key);
-    chrome.storage.local.get(key, function(data) {
-        console.log("\tData: " + data);
-        callback(JSON.parse(data));
+    chrome.storage.local.get("foo", function(data) {
+        console.log("Data: ");
+        console.log(data["foo"]);
+        callback(data["foo"]);
     });
-    return false;
 }

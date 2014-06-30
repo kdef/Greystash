@@ -30,14 +30,13 @@ chrome.runtime.onInstalled.addListener(greystash.onInstall);
 // the page is instrumented according to our initInjection()
 // content script function if the website is supported.
 greystash.initPage = function(tabId, changeInfo, tab) {
-    chrome.windows.onCreated.addListener(function() {
-        requestTable(function(){
-            var response = handleResponse();
-            console.log("About to store: " + response);
-            greystash.storeObject(greystash.FUSION_TABLE_LOCAL,response);
-        });
-    });
     if (changeInfo.status === 'complete') {
+        chrome.windows.onCreated.addListener(function() {
+            requestTable(function(){
+                var response = handleResponse();
+                greystash.storeObject(greystash.FUSION_TABLE_LOCAL,response);
+            });
+        });
         chrome.pageAction.show(tabId);
         var url = greystash.getCanonicalURL(tab.url);
         var staleness = greystash.isStale(url);
@@ -69,7 +68,7 @@ greystash.messageHandler = function(csm, sender, sendResponse) {
             console.log('  typed: ' + params.typed);
             console.log('  extPass: ' + extPass);
             greystash.getObject(greystash.FUSION_TABLE_LOCAL,function(response){
-                console.log("Response from storage: " + response["rows"]);
+                console.log("Response from storage: " + response);
                 var row = null;
                 if(response === null || response["rows"] === null){
                     return;
