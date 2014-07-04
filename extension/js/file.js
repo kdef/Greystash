@@ -114,11 +114,13 @@ greystash.changeChromeSyncState = function(value) {
 greystash.storeObject = function(key, obj){
     console.log("Ready to write object to memory: " + key);
     console.log(obj);
+    param = {};
+    param[key] = obj;
     if(obj != null && obj["kind"] != null){
-        chrome.storage.local.set({"foo" : obj},function(){
+        chrome.storage.local.set(param,function(){
             console.log("Saved the thing!");
             console.log(obj);
-            chrome.storage.local.get("foo" ,function(response){
+            chrome.storage.local.get(key ,function(response){
                 console.log("Response: ");
                 console.log(response);
             });
